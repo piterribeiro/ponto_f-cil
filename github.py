@@ -26,7 +26,12 @@ def conectar_db():
     except mysql.connector.Error as erro:
         messagebox.showerror("Erro", f"Erro ao conectar ao banco de dados: {erro}")
         return None
-
+def desconectar_db(conexao):
+    if conexao and conexao.is_connected():
+        conexao.close()
+        messagebox.showinfo("Desconectar", "Desconectado do banco de dados com sucesso.")
+    else:
+        messagebox.showerror("Erro", "Erro ao desconectar do banco de dados.")
 
 
 
