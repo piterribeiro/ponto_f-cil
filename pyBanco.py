@@ -79,7 +79,8 @@ def verificar_login():
         messagebox.showerror("Login", "Usuário ou senha incorretos.")
 
 def cadastrar_usuario(usuario, senha):
-    if executar_query("INSERT INTO user (NOME, SENHA) VALUES (%s, %s)", (usuario, senha)):
+     senha_hash = hashlib.sha256(senha.encode()).hexdigest()
+    if   executar_query("INSERT INTO user (NOME, SENHA) VALUES (%s, %s)", (usuario, senha)):
         messagebox.showinfo("Sucesso", "Usuário cadastrado com sucesso!")
         mostrar_tela("login")
 
