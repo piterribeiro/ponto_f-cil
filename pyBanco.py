@@ -3,6 +3,9 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
 import datetime
+import _mysql_connector
+import hashlib
+from cryptography.fernet import Fernet
 import mysql.connector
 
 # --- Configurações ---
@@ -70,26 +73,46 @@ def verificar_login():
         messagebox.showinfo("Login", "Bem-vindo, Empresa!")
         mostrar_tela("empresa_config")
         return
+        senha_hash = hashlib.sha256(senha.encode()).hexdigest()
+    resultado = buscar_um("SELECT ID, SENHA FROM user WHERE NOME = %s", (usuario,))
 
-    resultado = buscar_um("SELECT ID FROM user WHERE NOME = %s AND SENHA = %s", (usuario, senha))
     if resultado:
+        user_id, stored_senha_hash = resultado
         messagebox.showinfo("Login", "Bem-vindo!")
         mostrar_tela("pos_login")
     else:
         messagebox.showerror("Login", "Usuário ou senha incorretos.")
 
 def cadastrar_usuario(usuario, senha):
-     senha_hash = hashlib.sha256(senha.encode()).hexdigest()
-    if   executar_query("INSERT INTO user (NOME, SENHA) VALUES (%s, %s)", (usuario, senha)):
+    usuario_criptografado = fernet.encrypt(usuario.encode()).decode()
+    senha_criptografada = fernet.encrypt(senha.encode()).decode()
+    if executar_query("INSERT INTO user (NOME, SENHA) VALUES (%s, %s)", (usuario_criptografado, senha_criptografada)):
         messagebox.showinfo("Sucesso", "Usuário cadastrado com sucesso!")
         mostrar_tela("login")
+        
+def verificar_login():
+    usuario = usuario_entry.get()
+    senha = senha_entry.get()
 
-# --- Funções de Ponto ---
-ultimo_ponto = None
-historico_pontos_lista = []  # Lista para simular o histórico de pontos na memória
+    if usuario == "empresa" and senha == "123":
+        messagebox.showinfo("Login", "Bem-vindo, Empresa!")
+        mostrar_tela("empresa_config")
+        return
 
+    # Aplica o hash na senha fornecida para comparação
+    senha_hash = hashlib.sha256(senha.encode()).hexdigest()
+    resultado = buscar_um("SELECT ID, SENHA FROM user WHERE NOME = %s", (usuario,))
+    if resultado:
+        user_id, stored_senha_hash = resultado
+        if senha_hash == stored_senha_hash:
+            messagebox.showinfo("Login", "Bem-vindo!")
+            mostrar_tela("pos_login")
+        else:
+            messagebox.showerror("Login", "Usuário ou senha incorretos.")
+    else:
+        messagebox.showerror("Login", "Usuário ou senha incorretos.")
 def registrar_ponto():
-    global ultimo_ponto
+    global ultimo_pont
     agora = datetime.datetime.now()
     horario_ponto = agora.strftime("%H:%M:%S")
     dia_semana = agora.strftime("%A") # Obtém o dia da semana
