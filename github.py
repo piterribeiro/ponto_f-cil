@@ -4,8 +4,6 @@ from PIL import Image, ImageTk
 import os
 import datetime
 import mysql.connector
-import hashlib
-from cryptography.fernet import Fernet
 
 # --- Configurações ---
 DB_HOST = "localhost"
