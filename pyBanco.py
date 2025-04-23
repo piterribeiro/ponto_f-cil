@@ -6,6 +6,10 @@ import datetime
 import _mysql_connector
 import hashlib
 from cryptography.fernet import Fernet
+
+# Generate or load a Fernet key
+FERNET_KEY = Fernet.generate_key()  # Replace with your actual key if you have one
+fernet = Fernet(FERNET_KEY)
 import mysql.connector
 
 # --- Configurações ---
@@ -57,6 +61,10 @@ def buscar_um(query, params=None):
                 cursor.close()
                 conexao.close()
     return None
+
+# --- Variáveis Globais ---
+historico_pontos_lista = []  # Lista para armazenar o histórico de pontos
+ultimo_ponto = None  # Variável global para armazenar o último ponto registrado
 
 # --- Funções de Tela ---
 def mostrar_tela(tela_nome):
