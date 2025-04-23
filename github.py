@@ -9,7 +9,7 @@ import mysql.connector
 DB_HOST = "localhost"
 DB_USER = "root"
 DB_PASSWORD = ""
-DB_NAME = "login"
+DB_NAME = "ponto_facil"
 TEMPO_PADRAO_PONTOS_MINUTOS = 480
 
 # --- Funções de Banco de Dados ---
@@ -71,7 +71,7 @@ def verificar_login():
         mostrar_tela("empresa_config")
         return
 
-    resultado = buscar_um("SELECT ID FROM user WHERE NOME = %s AND SENHA = %s", (usuario, senha))
+    resultado = buscar_um("SELECT ID FROM login WHERE NOME = %s AND SENHA = %s", (usuario, senha))
     if resultado:
         messagebox.showinfo("Login", "Bem-vindo!")
         mostrar_tela("pos_login")
@@ -79,7 +79,7 @@ def verificar_login():
         messagebox.showerror("Login", "Usuário ou senha incorretos.")
 
 def cadastrar_usuario(usuario, senha):
-    if executar_query("INSERT INTO user (NOME, SENHA) VALUES (%s, %s)", (usuario, senha)):
+    if executar_query("INSERT INTO login (NOME, SENHA) VALUES (%s, %s)", (usuario, senha)):
         messagebox.showinfo("Sucesso", "Usuário cadastrado com sucesso!")
         mostrar_tela("login")
 
