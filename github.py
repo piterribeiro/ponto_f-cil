@@ -73,7 +73,7 @@ def verificar_login():
 
     resultado = buscar_um("SELECT ID FROM login WHERE NOME = %s AND SENHA = %s", (usuario, senha))
     if resultado:
-        messagebox.showinfo("Login", "Bienvenido!")
+        messagebox.showinfo("Login", "¡Bienvenido!")
         mostrar_tela("pos_login")
     else:
         messagebox.showerror("Login", "Usuário ou senha incorretos.")
